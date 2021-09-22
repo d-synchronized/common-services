@@ -19,7 +19,7 @@ node () { //node('worker_node')
        echo "Downloading Artifact ${artifactId} with Version ${VERSION} from Artifactory"
        ARTIFACT_ALREADY_PRESENT = checkIfArtifactAlreadyExistInRepo("${artifactId}" ,
                                                                                 "${params.VERSION}" , 
-                                                                                 IS_RELEASE ? false : true,
+                                                                                 "${params.VERSION}".contains("SNAPSHOT") ? false : true,
                                                                                  server)
        if(ARTIFACT_ALREADY_PRESENT){
          echo "Successfully downloaded Artifact ${artifactId} with Version ${VERSION}"
