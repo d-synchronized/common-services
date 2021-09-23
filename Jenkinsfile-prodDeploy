@@ -8,7 +8,6 @@ node () { //node('worker_node')
       disableConcurrentBuilds()
    ])
    
-   def IS_RELEASE = true
    def artifactId = 'common-services'
    try {
      stage ('Artifactory Configuration') {
@@ -16,13 +15,13 @@ node () { //node('worker_node')
      }
       
      stage('Download Artifact') {
-       echo "Downloading Artifact ${artifactId} with Version ${VERSION} from Artifactory"
+       echo "Downloading Artifact ${artifactId} with Version ${params.VERSION} from Artifactory"
        ARTIFACT_ALREADY_PRESENT = checkIfArtifactAlreadyExistInRepo("${artifactId}" ,
                                                                                 "${params.VERSION}" , 
                                                                                 "${params.VERSION}".contains("SNAPSHOT") ? false : true,
                                                                                  server)
        if(ARTIFACT_ALREADY_PRESENT){
-         echo "Successfully downloaded Artifact ${artifactId} with Version ${VERSION}"
+         echo "Successfully downloaded Artifact ${artifactId} with Version ${params.VERSION}"
        } else {
          echo "Artifact ${artifactId} with Version ${params.VERSION} not found"
        }                                                                         
