@@ -9,7 +9,7 @@ node () { //node('worker_node')
    ])
    
    def IS_RELEASE = false
-   def artifactId = 'common-services'
+   def artifactId = 'cboss-common-services'
    try {
      stage ('Artifactory Configuration') {
        server = Artifactory.server 'DSYNC_JFROG_INSTANCE'
@@ -31,6 +31,8 @@ node () { //node('worker_node')
      
      stage('Publish To Application/Web Server') {
        echo "Deploying to default tomcat server ${params.SERVER}"
+       targetFolder = prepareTargetFolder("${artifactId}" , "${params.version}" , version.contains("SNAPSHOT"))
+       deploy adapters: [tomcat8(url: "http://localhost:8082/", credentialsId: 'tomcat')], war: "${targetFolder}/*.war", contextPath: "${artifactId}"
      }//Publish To Application/Web Server stage ends here
      currentBuild.result = 'SUCCESS'
    } catch(Exception err) {
@@ -83,7 +85,6 @@ def checkIfArtifactAlreadyExistInRepo(String artifactId, String version, boolean
 
 
 def prepareTargetFolder(String artifactId, String version, boolean downloadSnapshot){
-   version = !downloadSnapshot && version.contains("SNAPSHOT") ? version.replace("-SNAPSHOT" , "") : version
    def targetFolderInfix = downloadSnapshot ? "SNAPSHOTS" : "RELEASES"
    //def targetFolder = "${artifactId}/${targetFolderInfix}/${version}/"
    def targetFolder = "${artifactId}/${version}/"
