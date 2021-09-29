@@ -30,7 +30,7 @@ node () { //node('worker_node')
       
      
      stage('Publish To Application/Web Server') {
-       targetFolder = prepareTargetFolder("${artifactId}" , "${params.version}" , "${params.VERSION}".contains("SNAPSHOT") ? true : false)
+       targetFolder = prepareTargetFolder("${artifactId}" , "${params.VERSION}" , "${params.VERSION}".contains("SNAPSHOT") ? true : false)
        echo "Deploying to default tomcat server  targetFolder ${targetFolder}"
        deploy adapters: [tomcat8(url: "http://localhost:8082/", credentialsId: 'tomcat')], war: "${targetFolder}/*.war", contextPath: "${artifactId}"
      }//Publish To Application/Web Server stage ends here
