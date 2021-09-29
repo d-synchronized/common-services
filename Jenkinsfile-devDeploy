@@ -30,8 +30,8 @@ node () { //node('worker_node')
       
      
      stage('Publish To Application/Web Server') {
-       echo "Deploying to default tomcat server ${params.SERVER}"
        targetFolder = prepareTargetFolder("${artifactId}" , "${params.version}" , "${params.VERSION}".contains("SNAPSHOT") ? true : false)
+       echo "Deploying to default tomcat server  targetFolder ${targetFolder}"
        deploy adapters: [tomcat8(url: "http://localhost:8082/", credentialsId: 'tomcat')], war: "${targetFolder}/*.war", contextPath: "${artifactId}"
      }//Publish To Application/Web Server stage ends here
      currentBuild.result = 'SUCCESS'
@@ -85,7 +85,6 @@ def checkIfArtifactAlreadyExistInRepo(String artifactId, String version, boolean
 
 
 def prepareTargetFolder(String artifactId, String version, boolean downloadSnapshot){
-   def targetFolderInfix = downloadSnapshot ? "SNAPSHOTS" : "RELEASES"
    //def targetFolder = "${artifactId}/${targetFolderInfix}/${version}/"
    def targetFolder = "${artifactId}/${version}/"
    return targetFolder
