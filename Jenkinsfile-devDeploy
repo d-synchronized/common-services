@@ -19,7 +19,7 @@ node () { //node('worker_node')
        echo "Downloading Artifact ${artifactId} with Version ${params.VERSION} from Artifactory"
        ARTIFACT_ALREADY_PRESENT = checkIfArtifactAlreadyExistInRepo("${artifactId}" ,
                                                                                 "${params.VERSION}" , 
-                                                                                "${params.VERSION}".contains("SNAPSHOT") ? false : true,
+                                                                                "${params.VERSION}".contains("SNAPSHOT") ? true : false,
                                                                                  server)
        if(ARTIFACT_ALREADY_PRESENT){
          echo "Successfully downloaded Artifact ${artifactId} with Version ${params.VERSION}"
@@ -31,7 +31,7 @@ node () { //node('worker_node')
      
      stage('Publish To Application/Web Server') {
        echo "Deploying to default tomcat server ${params.SERVER}"
-       targetFolder = prepareTargetFolder("${artifactId}" , "${params.version}" , "${params.version}".contains("SNAPSHOT"))
+       targetFolder = prepareTargetFolder("${artifactId}" , "${params.version}" , "${params.VERSION}".contains("SNAPSHOT") ? true : false)
        deploy adapters: [tomcat8(url: "http://localhost:8082/", credentialsId: 'tomcat')], war: "${targetFolder}/*.war", contextPath: "${artifactId}"
      }//Publish To Application/Web Server stage ends here
      currentBuild.result = 'SUCCESS'
